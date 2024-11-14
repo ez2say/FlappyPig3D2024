@@ -80,10 +80,10 @@ public class TunnelManager : MonoBehaviour
         _obstaclePositions.Clear();
         foreach (GameObject segment in _activeSegments)
         {
-            ObstacleSpawner[] obstacleSpawners = segment.GetComponentsInChildren<ObstacleSpawner>();
-            foreach (ObstacleSpawner obstacleSpawner in obstacleSpawners)
+            BaseSpawner[] spawners = segment.GetComponentsInChildren<BaseSpawner>();
+            foreach (BaseSpawner spawner in spawners)
             {
-                _obstaclePositions.AddRange(obstacleSpawner.GetSpawnedObstaclePositions());
+                _obstaclePositions.AddRange(spawner.GetSpawnedObjectPositions());
             }
         }
     }
