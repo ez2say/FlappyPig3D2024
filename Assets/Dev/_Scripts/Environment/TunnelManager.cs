@@ -5,74 +5,134 @@ using UnityEngine;
 public class TunnelManager : MonoBehaviour
 {
     [Header("Tunnel Settings")]
-    [SerializeField] private GameObject[] _tunnelSegments; // Массив сегментов туннеля
-    [SerializeField] private float _segmentLength = 10f; // Длина одного сегмента
-    [SerializeField] private float _spawnInterval = 2f; // Интервал создания новых сегментов
-    [SerializeField] private Transform _player; // Ссылка на игрока (птицу)
-    [SerializeField] private float _segmentDestroyDelay = 5f; // Время через которое сегмент будет удален
+    [SerializeField] private GameObject[] _tunnelSegments;
+
+    [SerializeField] private float _segmentLength = 10f;
+
+    [SerializeField] private float _spawnInterval = 2f;
+
+    [SerializeField] private Transform _player;
+
+    [SerializeField] private float _segmentDestroyDelay = 5f;
 
     private int _currentSegmentIndex = 0;
+
     private float _timer = 0f;
+
     private float _destroyTimer = 0f;
-    private List<GameObject> _activeSegments = new List<GameObject>(); // Список активных сегментов
-    private List<Vector3> _obstaclePositions = new List<Vector3>(); // Список позиций препятствий
+
+    private List<GameObject> _activeSegments = new List<GameObject>();
+
+    private List<Vector3> _obstaclePositions = new List<Vector3>();
 
     [Header("Coin Spawner")]
-    [SerializeField] private CoinSpawner _coinSpawner; // Ссылка на CoinSpawner
+    [SerializeField] private CoinSpawner _coinSpawner;
 
     void Update()
     {
-        _timer += Time.deltaTime;
-        _destroyTimer += Time.deltaTime;
+        UpdateTimers();
 
-        if (_timer >= _spawnInterval)
+        if (ShouldSpawnNewSegment())
         {
             SpawnNewSegment();
-            _timer = 0f;
+
+            ResetTimer();
         }
 
         RecycleSegments();
     }
 
+    private void UpdateTimers()
+    {
+        _timer += Time.deltaTime;
+
+        _destroyTimer += Time.deltaTime;
+    }
+
+    private bool ShouldSpawnNewSegment()
+    {
+        return _timer >= _spawnInterval;
+    }
+
+    private void ResetTimer()
+    {
+        _timer = 0f;
+    }
+
     private void SpawnNewSegment()
     {
-        // Создаем новый сегмент за последним сегментом в списке
-        GameObject newSegment = Instantiate(_tunnelSegments[_currentSegmentIndex], transform);
-        newSegment.transform.position = _activeSegments.Count > 0 ? _activeSegments[_activeSegments.Count - 1].transform.position + Vector3.forward * _segmentLength : Vector3.zero;
+        GameObject newSegment = CreateNewSegment();
 
-        // Добавляем новый сегмент в список
+        PositionNewSegment(newSegment);
+
         _activeSegments.Add(newSegment);
 
-        // Переходим к следующему сегменту
-        _currentSegmentIndex = (_currentSegmentIndex + 1) % _tunnelSegments.Length;
+        IncrementSegmentIndex();
 
-        // Обновляем список позиций препятствий
         UpdateObstaclePositions();
 
-        // Передаем список позиций препятствий в CoinSpawner
         _coinSpawner.SetObstaclePositions(_obstaclePositions);
+    }
+
+    private GameObject CreateNewSegment()
+    {
+        return Instantiate(_tunnelSegments[_currentSegmentIndex], transform);
+    }
+
+    private void PositionNewSegment(GameObject newSegment)
+    {
+        newSegment.transform.position = _activeSegments.Count > 0 ? GetLastSegmentPosition() + Vector3.forward * _segmentLength : Vector3.zero;
+    }
+
+    private Vector3 GetLastSegmentPosition()
+    {
+        return _activeSegments[_activeSegments.Count - 1].transform.position;
+    }
+
+    private void IncrementSegmentIndex()
+    {
+        _currentSegmentIndex = (_currentSegmentIndex + 1) % _tunnelSegments.Length;
     }
 
     private void RecycleSegments()
     {
-        // Проверяем, находится ли первый сегмент за пределами видимости игрока и прошло ли достаточно времени для его удаления
-        if (_activeSegments.Count > 0 && _activeSegments[0].transform.position.z < _player.position.z - _segmentLength && _destroyTimer >= _segmentDestroyDelay)
+        if (ShouldRecycleFirstSegment())
         {
-            // Удаляем первый сегмент
-            Destroy(_activeSegments[0]);
+            DestroyFirstSegment();
 
-            // Удаляем первый сегмент из списка
-            _activeSegments.RemoveAt(0);
+            RemoveFirstSegmentFromList();
 
-            // Сбрасываем таймер удаления
-            _destroyTimer = 0f;
+            ResetDestroyTimer();
 
-            // Обновляем список позиций препятствий
             UpdateObstaclePositions();
 
-            // Передаем список позиций препятствий в CoinSpawner
             _coinSpawner.SetObstaclePositions(_obstaclePositions);
         }
+    }
+
+    private bool ShouldRecycleFirstSegment()
+    {
+        return _activeSegments.Count > 0 && IsFirstSegmentOutOfView() && _destroyTimer >= _segmentDestroyDelay;
+    }
+
+    private bool IsFirstSegmentOutOfView()
+    {
+        return _activeSegments[0].transform.position.z < _player.position.z - _segmentLength;
+    }
+
+    private void DestroyFirstSegment()
+    {
+        Destroy(_activeSegments[0]);
+    }
+
+    private void RemoveFirstSegmentFromList()
+    {
+        _activeSegments.RemoveAt(0);
+    }
+
+    private void ResetDestroyTimer()
+    {
+        _destroyTimer = 0f;
     }
 
     private void UpdateObstaclePositions()
@@ -80,11 +140,16 @@ public class TunnelManager : MonoBehaviour
         _obstaclePositions.Clear();
         foreach (GameObject segment in _activeSegments)
         {
-            BaseSpawner[] spawners = segment.GetComponentsInChildren<BaseSpawner>();
-            foreach (BaseSpawner spawner in spawners)
-            {
-                _obstaclePositions.AddRange(spawner.GetSpawnedObjectPositions());
-            }
+            CollectObstaclePositionsFromSegment(segment);
+        }
+    }
+
+    private void CollectObstaclePositionsFromSegment(GameObject segment)
+    {
+        BaseSpawner[] spawners = segment.GetComponentsInChildren<BaseSpawner>();
+        foreach (BaseSpawner spawner in spawners)
+        {
+            _obstaclePositions.AddRange(spawner.GetSpawnedObjectPositions());
         }
     }
 }
