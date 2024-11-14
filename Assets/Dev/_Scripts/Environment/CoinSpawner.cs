@@ -5,15 +5,22 @@ using UnityEngine;
 public class CoinSpawner : MonoBehaviour
 {
     [Header("Coin Settings")]
-    [SerializeField] private GameObject _coinPrefab; // Префаб монетки
-    [SerializeField] private BoxCollider _spawnArea; // Область спауна
-    [SerializeField] private float _spawnInterval = 2f; // Интервал спауна монеток
-    [SerializeField] private float _minDistanceBetweenCoins = 2f; // Минимальное расстояние между монетками
-    [SerializeField] private float _minDistanceFromObstacles = 2f; // Минимальное расстояние от препятствий
-    [SerializeField] private int _maxCoinCount = 10; // Максимальное количество монеток в сегменте
+    [SerializeField] private GameObject _coinPrefab;
+
+    [SerializeField] private BoxCollider _spawnArea;
+
+    [SerializeField] private float _spawnInterval = 2f;
+
+    [SerializeField] private float _minDistanceBetweenCoins = 2f;
+
+    [SerializeField] private float _minDistanceFromObstacles = 2f;
+
+    [SerializeField] private int _maxCoinCount = 10;
+
 
     private List<Vector3> _spawnedCoinPositions = new List<Vector3>();
-    private List<Vector3> _obstaclePositions; // Список позиций препятствий
+
+    private List<Vector3> _obstaclePositions;
 
     public void SetObstaclePositions(List<Vector3> obstaclePositions)
     {
@@ -29,9 +36,9 @@ public class CoinSpawner : MonoBehaviour
     {
         while (true)
         {
-            if (_spawnedCoinPositions.Count < _maxCoinCount)
+            if (CheckCoinCount())
             {
-                Vector3 spawnPosition = GetRandomPositionInArea(_spawnArea);
+                Vector3 spawnPosition = GenerateRandomPosition();
                 if (IsValidSpawnPosition(spawnPosition))
                 {
                     InstantiateCoin(spawnPosition);
@@ -41,24 +48,63 @@ public class CoinSpawner : MonoBehaviour
         }
     }
 
+    private bool CheckCoinCount()
+    {
+        return _spawnedCoinPositions.Count < _maxCoinCount;
+    }
+
+    private Vector3 GenerateRandomPosition()
+    {
+        return GetRandomPositionInArea(_spawnArea);
+    }
+
     private Vector3 GetRandomPositionInArea(BoxCollider area)
     {
-        Vector3 extents = area.size / 2f;
+        Vector3 extents = CalculateExtents(area);
 
-        Vector3 point = new Vector3(
+        Vector3 localPoint = GenerateRandomLocalPoint(extents);
+
+        Vector3 worldPoint = TransformToWorldPoint(area, localPoint);
+
+        return worldPoint;
+    }
+
+    private Vector3 CalculateExtents(BoxCollider area)
+    {
+        return area.size / 2f;
+    }
+
+    private Vector3 GenerateRandomLocalPoint(Vector3 extents)
+    {
+        return new Vector3(
             Random.Range(-extents.x, extents.x),
-            Random.Range(5.5f, 80f), // Генерируем y в пределах области спауна
+            Random.Range(5.5f, 80f),
             Random.Range(-extents.z, extents.z)
         );
+    }
 
-        point = area.transform.TransformPoint(point);
-
-        return point;
+    private Vector3 TransformToWorldPoint(BoxCollider area, Vector3 localPoint)
+    {
+        return area.transform.TransformPoint(localPoint);
     }
 
     private bool IsValidSpawnPosition(Vector3 position)
     {
-        // Проверяем, что позиция находится на достаточном расстоянии от уже созданных монеток
+        if (!CheckDistanceToCoins(position))
+        {
+            return false;
+        }
+
+        if (!CheckDistanceToObstacles(position))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool CheckDistanceToCoins(Vector3 position)
+    {
         foreach (Vector3 coinPosition in _spawnedCoinPositions)
         {
             if (Vector3.Distance(coinPosition, position) < _minDistanceBetweenCoins)
@@ -66,8 +112,11 @@ public class CoinSpawner : MonoBehaviour
                 return false;
             }
         }
+        return true;
+    }
 
-        // Проверяем, что позиция находится на достаточном расстоянии от препятствий
+    private bool CheckDistanceToObstacles(Vector3 position)
+    {
         if (_obstaclePositions != null)
         {
             foreach (Vector3 obstaclePosition in _obstaclePositions)
@@ -78,13 +127,13 @@ public class CoinSpawner : MonoBehaviour
                 }
             }
         }
-
         return true;
     }
 
     private void InstantiateCoin(Vector3 spawnPosition)
     {
         GameObject coin = Instantiate(_coinPrefab, spawnPosition, Quaternion.identity);
+        
         _spawnedCoinPositions.Add(spawnPosition);
     }
 }

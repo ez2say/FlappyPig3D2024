@@ -7,7 +7,8 @@ public class BoundaryController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Rigidbody rb = other.GetComponent<Rigidbody>();
-            rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.z); // Останавливаем горизонтальное движение
+            
+            rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.z);
         }
     }
 }
