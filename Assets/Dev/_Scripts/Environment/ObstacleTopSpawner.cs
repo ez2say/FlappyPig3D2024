@@ -1,37 +1,41 @@
 using System.Collections;
 using UnityEngine;
 
-public class TopObstacleSpawner : BaseSpawner
+public class CeilingSpawner : BaseSpawner
 {
+    [Header("Ceiling Spawner Settings")]
+    [SerializeField] private float _spawnYOffset = 0f;
+
     protected override IEnumerator SpawnObjects()
     {
         while (true)
         {
             if (_spawnedObjectPositions.Count < _maxObjectCount)
             {
-                Vector3 spawnPosition = GetRandomPositionInArea(_spawnArea);
-                yield return new WaitForSeconds(_spawnInterval);
-                InstantiateObject(spawnPosition);
+                Vector3 spawnPosition = GetRandomPositionOnCeiling();
+
+                if (IsPositionValid(spawnPosition))
+                {
+                    InstantiateObject(spawnPosition);
+                }
             }
-            else
-            {
-                yield return null;
-            }
+
+            yield return new WaitForSeconds(_spawnInterval);
         }
     }
 
-    protected override void AdjustObjectPosition(GameObject obj)
+    private Vector3 GetRandomPositionOnCeiling()
     {
-        Collider objCollider = obj.GetComponent<Collider>();
-        if (objCollider != null)
-        {
-            Vector3 objPosition = obj.transform.position;
-            float objHeight = objCollider.bounds.size.y;
+        Vector3 extents = _spawnArea.size / 2f;
 
-            objPosition.y = 80f - objHeight / 2f;
-            obj.transform.position = objPosition;
+        float randomX = Random.Range(-extents.x, extents.x);
+        float randomY = extents.y + _spawnYOffset;
+        float randomZ = Random.Range(-extents.z, extents.z);
 
-            obj.transform.rotation = Quaternion.Euler(180f, 0f, 0f);
-        }
+        Vector3 point = new Vector3(randomX, randomY, randomZ);
+        point = _spawnArea.transform.TransformPoint(point);
+
+        return point;
     }
 }
+    

@@ -1,10 +1,16 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class FloorSpawner : BaseSpawner
+public class WallSpawner : BaseSpawner
 {
-    [Header("Floor Spawner Settings")]
+    [Header("Wall Spawner Settings")]
     [SerializeField] private float _spawnYOffset = 0f;
+    [SerializeField] private float _spawnZOffset = 0f;
+
+    [SerializeField] private float _spawnXStartOffset = 0f;
+
+    [SerializeField] private float _spawnXEndOffset = 0f;
 
     protected override IEnumerator SpawnObjects()
     {
@@ -12,7 +18,7 @@ public class FloorSpawner : BaseSpawner
         {
             if (_spawnedObjectPositions.Count < _maxObjectCount)
             {
-                Vector3 spawnPosition = GetRandomPositionOnFloor();
+                Vector3 spawnPosition = GetRandomPositionOnWall();
 
                 if (IsPositionValid(spawnPosition))
                 {
@@ -24,13 +30,13 @@ public class FloorSpawner : BaseSpawner
         }
     }
 
-    private Vector3 GetRandomPositionOnFloor()
+    private Vector3 GetRandomPositionOnWall()
     {
         Vector3 extents = _spawnArea.size / 2f;
 
-        float randomX = Random.Range(-extents.x, extents.x);
-        float randomY = -extents.y + _spawnYOffset;
-        float randomZ = Random.Range(-extents.z, extents.z);
+        float randomX = Random.Range(_spawnXStartOffset, _spawnXEndOffset);
+        float randomY = Random.Range(-extents.y, extents.y) + _spawnYOffset;
+        float randomZ = Random.Range(-extents.z, extents.z) + _spawnZOffset;
 
         Vector3 point = new Vector3(randomX, randomY, randomZ);
         point = _spawnArea.transform.TransformPoint(point);

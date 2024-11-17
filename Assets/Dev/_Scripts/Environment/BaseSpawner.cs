@@ -6,13 +6,9 @@ public abstract class BaseSpawner : MonoBehaviour
 {
     [Header("Spawner Settings")]
     [SerializeField] protected GameObject[] _prefabs;
-
     [SerializeField] protected BoxCollider _spawnArea;
-    
     [SerializeField] protected float _spawnInterval = 2f;
-
     [SerializeField] protected float _minDistanceBetweenObjects = 2f;
-    
     [SerializeField] protected int _maxObjectCount = 10;
 
     protected List<Vector3> _spawnedObjectPositions = new List<Vector3>();
@@ -30,7 +26,7 @@ public abstract class BaseSpawner : MonoBehaviour
 
         Vector3 point = new Vector3(
             Random.Range(-extents.x, extents.x),
-            Random.Range(5.5f, 80f),
+            Random.Range(-extents.y, extents.y),
             Random.Range(-extents.z, extents.z)
         );
 
@@ -45,9 +41,9 @@ public abstract class BaseSpawner : MonoBehaviour
 
         GameObject obj = CreateObject(randomIndex, spawnPosition);
 
-        AdjustObjectPosition(obj);
-
         AddObjectPosition(spawnPosition);
+
+        obj.transform.SetParent(transform);
     }
 
     protected int GetRandomObjectIndex()
@@ -65,7 +61,27 @@ public abstract class BaseSpawner : MonoBehaviour
         _spawnedObjectPositions.Add(position);
     }
 
-    protected abstract void AdjustObjectPosition(GameObject obj);
+    protected bool IsPositionValid(Vector3 position)
+    {
+        foreach (Vector3 spawnedPosition in _spawnedObjectPositions)
+        {
+            if (Vector3.Distance(position, spawnedPosition) < _minDistanceBetweenObjects)
+            {
+                return false;
+            }
+        }
+
+        Collider[] hitColliders = Physics.OverlapSphere(position, _minDistanceBetweenObjects);
+        foreach (var hitCollider in hitColliders)
+        {
+            if (hitCollider.CompareTag("Obstacle"))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     public List<Vector3> GetSpawnedObjectPositions()
     {

@@ -1,139 +1,41 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CoinSpawner : MonoBehaviour
+public class CoinSpawner : BaseSpawner
 {
-    [Header("Coin Settings")]
-    [SerializeField] private GameObject _coinPrefab;
+    [Header("Coin Spawner Settings")]
+    [SerializeField] private float _spawnYOffsetMin = 5f;
+    [SerializeField] private float _spawnYOffsetMax = 10f;
 
-    [SerializeField] private BoxCollider _spawnArea;
-
-    [SerializeField] private float _spawnInterval = 2f;
-
-    [SerializeField] private float _minDistanceBetweenCoins = 2f;
-
-    [SerializeField] private float _minDistanceFromObstacles = 2f;
-
-    [SerializeField] private int _maxCoinCount = 10;
-
-
-    private List<Vector3> _spawnedCoinPositions = new List<Vector3>();
-
-    private List<Vector3> _obstaclePositions;
-
-    public void SetObstaclePositions(List<Vector3> obstaclePositions)
-    {
-        _obstaclePositions = obstaclePositions;
-    }
-
-    void Start()
-    {
-        StartCoroutine(SpawnCoins());
-    }
-
-    IEnumerator SpawnCoins()
+    protected override IEnumerator SpawnObjects()
     {
         while (true)
         {
-            if (CheckCoinCount())
+            if (_spawnedObjectPositions.Count < _maxObjectCount)
             {
-                Vector3 spawnPosition = GenerateRandomPosition();
-                if (IsValidSpawnPosition(spawnPosition))
+                Vector3 spawnPosition = GetRandomPositionOnCoin();
+
+                if (IsPositionValid(spawnPosition))
                 {
-                    InstantiateCoin(spawnPosition);
+                    InstantiateObject(spawnPosition);
                 }
             }
+
             yield return new WaitForSeconds(_spawnInterval);
         }
     }
 
-    private bool CheckCoinCount()
+    private Vector3 GetRandomPositionOnCoin()
     {
-        return _spawnedCoinPositions.Count < _maxCoinCount;
-    }
+        Vector3 extents = _spawnArea.size / 2f;
 
-    private Vector3 GenerateRandomPosition()
-    {
-        return GetRandomPositionInArea(_spawnArea);
-    }
+        float randomX = Random.Range(-extents.x, extents.x);
+        float randomY = Random.Range(_spawnYOffsetMin, _spawnYOffsetMax);
+        float randomZ = Random.Range(-extents.z, extents.z);
 
-    private Vector3 GetRandomPositionInArea(BoxCollider area)
-    {
-        Vector3 extents = CalculateExtents(area);
+        Vector3 point = new Vector3(randomX, randomY, randomZ);
+        point = _spawnArea.transform.TransformPoint(point);
 
-        Vector3 localPoint = GenerateRandomLocalPoint(extents);
-
-        Vector3 worldPoint = TransformToWorldPoint(area, localPoint);
-
-        return worldPoint;
-    }
-
-    private Vector3 CalculateExtents(BoxCollider area)
-    {
-        return area.size / 2f;
-    }
-
-    private Vector3 GenerateRandomLocalPoint(Vector3 extents)
-    {
-        return new Vector3(
-            Random.Range(-extents.x, extents.x),
-            Random.Range(5.5f, 80f),
-            Random.Range(-extents.z, extents.z)
-        );
-    }
-
-    private Vector3 TransformToWorldPoint(BoxCollider area, Vector3 localPoint)
-    {
-        return area.transform.TransformPoint(localPoint);
-    }
-
-    private bool IsValidSpawnPosition(Vector3 position)
-    {
-        if (!CheckDistanceToCoins(position))
-        {
-            return false;
-        }
-
-        if (!CheckDistanceToObstacles(position))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    private bool CheckDistanceToCoins(Vector3 position)
-    {
-        foreach (Vector3 coinPosition in _spawnedCoinPositions)
-        {
-            if (Vector3.Distance(coinPosition, position) < _minDistanceBetweenCoins)
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private bool CheckDistanceToObstacles(Vector3 position)
-    {
-        if (_obstaclePositions != null)
-        {
-            foreach (Vector3 obstaclePosition in _obstaclePositions)
-            {
-                if (Vector3.Distance(obstaclePosition, position) < _minDistanceFromObstacles)
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private void InstantiateCoin(Vector3 spawnPosition)
-    {
-        GameObject coin = Instantiate(_coinPrefab, spawnPosition, Quaternion.identity);
-        
-        _spawnedCoinPositions.Add(spawnPosition);
+        return point;
     }
 }
