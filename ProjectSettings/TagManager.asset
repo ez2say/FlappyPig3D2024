@@ -7,6 +7,11 @@ TagManager:
   - Ground
   - Coin
   - Obstacle
+  - Building
+  - SpecialZoneEnter
+  - SpecialZoneExit
+  - SpecialZone
+  - BoxCoin
   layers:
   - Default
   - TransparentFX

@@ -1,17 +1,17 @@
 using UnityEngine;
+using Cinemachine;
 
 public class BirdController : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float _forwardSpeed = 3f;
-
     [SerializeField] private float _jumpForce = 5f;
-
-    [SerializeField] private float _horizontalSpeed = 2f;
+    [SerializeField] private CinemachineVirtualCamera _mainCamera; // Виртуальная камера для обычного вида
+    [SerializeField] private CinemachineVirtualCamera _2DCamera;
 
     private Rigidbody _rb;
-
     private int _score = 0;
+    private bool _is2DView = false;
 
     void Start()
     {
@@ -20,16 +20,31 @@ public class BirdController : MonoBehaviour
 
     void Update()
     {
-        _rb.velocity = new Vector3(_rb.velocity.x, _rb.velocity.y, _forwardSpeed);
-
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+        if (_is2DView)
         {
-            _rb.velocity = new Vector3(_rb.velocity.x, _jumpForce, _forwardSpeed);
-        }
+            // В 2D виде игрок может двигаться только вверх и вниз с помощью прыжков
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _rb.velocity = new Vector3(_rb.velocity.x, _jumpForce, _forwardSpeed);
+            }
 
-        float horizontalInput = Input.GetAxis("Horizontal");
-        
-        _rb.velocity = new Vector3(horizontalInput * _horizontalSpeed, _rb.velocity.y, _forwardSpeed);
+            // Автоматически перемещаем игрока в центр карты по горизонтали
+            Vector3 newPosition = transform.position;
+            newPosition.x = 8;
+            transform.position = newPosition;
+        }
+        else
+        {
+            _rb.velocity = new Vector3(_rb.velocity.x, _rb.velocity.y, _forwardSpeed);
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _rb.velocity = new Vector3(_rb.velocity.x, _jumpForce, _forwardSpeed);
+            }
+
+            float horizontalInput = Input.GetAxis("Horizontal");
+            _rb.velocity = new Vector3(horizontalInput * _forwardSpeed, _rb.velocity.y, _forwardSpeed);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -37,14 +52,49 @@ public class BirdController : MonoBehaviour
         if (other.CompareTag("Coin"))
         {
             _score += 10;
-
             Debug.Log("Подобрана монетка! Очки: " + _score);
+            Destroy(other.gameObject);
+        }
 
+        if (other.CompareTag("SpecialZoneEnter"))
+        {
+            SwitchCameraView(true);
+        }
+
+        if (other.CompareTag("BoxCoin"))
+        {
+            _score += 100;
+            Debug.Log("Подобрана коробка монет! Очки: " + _score);
             Destroy(other.gameObject);
         }
     }
-    
-    private void OnCollisionEnter(Collision other) 
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("SpecialZoneExit"))
+        {
+            SwitchCameraView(false);
+        }
+    }
+
+    private void SwitchCameraView(bool to2D)
+    {
+        _is2DView = to2D;
+        if (to2D)
+        {
+            // Переключаем камеру в вид 2D
+            _mainCamera.Priority = 0;
+            _2DCamera.Priority = 1;
+        }
+        else
+        {
+            // Возвращаем камеру в исходное положение
+            _mainCamera.Priority = 1;
+            _2DCamera.Priority = 0;
+        }
+    }
+
+    private void OnCollisionEnter(Collision other)
     {
         if (IsObstacleCollision(other))
         {
@@ -64,6 +114,6 @@ public class BirdController : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Умерла свинка,всёёёёёёёёёё");
+        Debug.Log("Умерла свинка, всёёёёёёёёё");
     }
 }
