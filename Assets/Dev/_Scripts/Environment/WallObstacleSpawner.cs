@@ -10,17 +10,41 @@ public class WallObstacleSpawner : BaseSpawner
     [SerializeField] private int _maxWiresPerSegment = 3;
     [SerializeField] private GameObject _wirePrefab;
     [SerializeField] protected float _minDistanceBetweenObjects = 2f;
-    [SerializeField] private float _initialHorizontalWireDuration = 300f;
-    [SerializeField] private float _diagonalWireDuration = 600f;
+    [SerializeField] private int _diagonalSegmentStart = 5; // Спустя сколько сегментов спаунить диагональные провода
 
     private int _currentSegmentIndex = 0;
     private int _wiresSpawnedInCurrentSegment = 0;
-    private float _gameTime = 0f;
+
+    private RoadGenerator _roadGenerator;
 
     protected override void Start()
     {
         base.Start();
-        StartCoroutine(UpdateGameTime());
+        _roadGenerator = FindObjectOfType<RoadGenerator>();
+
+        if (_roadGenerator != null)
+        {
+            _roadGenerator.OnNewSegmentAdded += OnNewSegmentAdded;
+        }
+        else
+        {
+            Debug.LogError("RoadGenerator not found on any GameObject!");
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (_roadGenerator != null)
+        {
+            _roadGenerator.OnNewSegmentAdded -= OnNewSegmentAdded;
+        }
+    }
+
+    private void OnNewSegmentAdded(GameObject newSegment)
+    {
+        _currentSegmentIndex = _roadGenerator.SpawnedSegmentCount;
+        Debug.Log($"Spawned Segment Count: {_currentSegmentIndex}");
+        StartCoroutine(SpawnObjects());
     }
 
     protected override IEnumerator SpawnObjects()
@@ -29,45 +53,40 @@ public class WallObstacleSpawner : BaseSpawner
         {
             if (_wiresSpawnedInCurrentSegment < _maxWiresPerSegment)
             {
-                Vector3 spawnPosition1, spawnPosition2;
+                int horizontalWireCount = 0;
+                int diagonalWireCount = 0;
 
-                GetRandomSpawnPoints(out spawnPosition1, out spawnPosition2);
-
-                if (IsPositionValid(spawnPosition1) && IsPositionValid(spawnPosition2))
+                if (_currentSegmentIndex < _diagonalSegmentStart)
                 {
-                    if (_gameTime < _initialHorizontalWireDuration)
+                    horizontalWireCount = _maxWiresPerSegment;
+                }
+                else
+                {
+                    horizontalWireCount = Random.Range(0, _maxWiresPerSegment + 1);
+                    diagonalWireCount = _maxWiresPerSegment - horizontalWireCount;
+                }
+
+                for (int i = 0; i < horizontalWireCount; i++)
+                {
+                    Vector3 spawnPosition1, spawnPosition2;
+                    GetRandomSpawnPoints(out spawnPosition1, out spawnPosition2);
+
+                    if (IsPositionValid(spawnPosition1) && IsPositionValid(spawnPosition2) && Mathf.Approximately(spawnPosition1.y, spawnPosition2.y))
                     {
-                        if (Mathf.Approximately(spawnPosition1.y, spawnPosition2.y))
-                        {
-                            SpawnWire(spawnPosition1, spawnPosition2);
-                            _wiresSpawnedInCurrentSegment++;
-                        }
+                        SpawnWire(spawnPosition1, spawnPosition2);
+                        _wiresSpawnedInCurrentSegment++;
                     }
-                    else if (_gameTime < _diagonalWireDuration)
+                }
+
+                for (int i = 0; i < diagonalWireCount; i++)
+                {
+                    Vector3 spawnPosition1, spawnPosition2;
+                    GetRandomSpawnPoints(out spawnPosition1, out spawnPosition2);
+
+                    if (IsPositionValid(spawnPosition1) && IsPositionValid(spawnPosition2) && IsDiagonalPositionValid(spawnPosition1, spawnPosition2))
                     {
-                        if (Mathf.Approximately(spawnPosition1.y, spawnPosition2.y))
-                        {
-                            SpawnWire(spawnPosition1, spawnPosition2);
-                            _wiresSpawnedInCurrentSegment++;
-                        }
-                        else if (IsDiagonalPositionValid(spawnPosition1, spawnPosition2))
-                        {
-                            SpawnWire(spawnPosition1, spawnPosition2);
-                            _wiresSpawnedInCurrentSegment++;
-                        }
-                    }
-                    else
-                    {
-                        if (Mathf.Approximately(spawnPosition1.y, spawnPosition2.y))
-                        {
-                            SpawnWire(spawnPosition1, spawnPosition2);
-                            _wiresSpawnedInCurrentSegment++;
-                        }
-                        else if (IsDiagonalPositionValid(spawnPosition1, spawnPosition2))
-                        {
-                            SpawnWire(spawnPosition1, spawnPosition2);
-                            _wiresSpawnedInCurrentSegment++;
-                        }
+                        SpawnWire(spawnPosition1, spawnPosition2);
+                        _wiresSpawnedInCurrentSegment++;
                     }
                 }
             }
@@ -91,13 +110,14 @@ public class WallObstacleSpawner : BaseSpawner
 
         spawnPosition1 = _spawnPointsHouse1[randomIndex1].position;
         spawnPosition2 = _spawnPointsHouse2[randomIndex2].position;
-
-        Debug.Log($"Выбрана точка спауна : {spawnPosition1} и {spawnPosition2}");
     }
 
     private void SpawnWire(Vector3 startPosition, Vector3 endPosition)
     {
+        // Создаем провод на начальной позиции
         GameObject wire = Instantiate(_wirePrefab, startPosition, Quaternion.identity);
+
+        // Получаем компонент LineRenderer
         LineRenderer lineRenderer = wire.GetComponent<LineRenderer>();
 
         if (lineRenderer == null)
@@ -106,14 +126,31 @@ public class WallObstacleSpawner : BaseSpawner
             return;
         }
 
+        // Устанавливаем количество позиций в LineRenderer
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, startPosition);
         lineRenderer.SetPosition(1, endPosition);
 
+        // Вычисляем направление от начальной точки к конечной
+        Vector3 direction = endPosition - startPosition;
+
+        // Вычисляем поворот, который будет смотреть в направлении от startPosition к endPosition
+        Quaternion rotation = Quaternion.LookRotation(direction, Vector3.up);
+
+        // Применяем поворот к проводу
+        wire.transform.rotation = rotation;
+
+        // Масштабируем провод, чтобы он соответствовал длине между точками
+        float wireLength = direction.magnitude;
+        wire.transform.localScale = new Vector3(wire.transform.localScale.x, wire.transform.localScale.y, wireLength);
+
+        // Перемещаем провод на среднюю точку между двумя точками
+        Vector3 midPoint = (startPosition + endPosition) / 2f;
+        wire.transform.position = midPoint;
+
+        // Добавляем позиции в список
         AddObjectPosition(startPosition);
         AddObjectPosition(endPosition);
-
-        Debug.Log($"Провод между {startPosition} и {endPosition}");
     }
 
     private bool IsPositionValid(Vector3 position)
@@ -184,15 +221,6 @@ public class WallObstacleSpawner : BaseSpawner
     {
         return p3.x <= Mathf.Max(p1.x, p2.x) && p3.x >= Mathf.Min(p1.x, p2.x) &&
                p3.y <= Mathf.Max(p1.y, p2.y) && p3.y >= Mathf.Min(p1.y, p2.y);
-    }
-
-    private IEnumerator UpdateGameTime()
-    {
-        while (true)
-        {
-            _gameTime += Time.deltaTime;
-            yield return null;
-        }
     }
 
     public void MoveToNextSegment()

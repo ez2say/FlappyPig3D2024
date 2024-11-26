@@ -67,6 +67,11 @@ public class BirdController : MonoBehaviour
             Debug.Log("Подобрана коробка монет! Очки: " + _score);
             Destroy(other.gameObject);
         }
+
+        if (other.CompareTag("Wire"))
+        {
+            Debug.Log("Ударило током");
+        }
     }
 
     private void OnTriggerExit(Collider other)

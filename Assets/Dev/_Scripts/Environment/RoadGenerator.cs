@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,9 +7,8 @@ public class RoadGenerator : MonoBehaviour
 {   
     public int SpawnedSegmentCount { get; private set; } = 0;
 
-    public delegate void NewSegmentAddedHandler(GameObject newSegment);
     
-    public event NewSegmentAddedHandler OnNewSegmentAdded;
+    public event Action<GameObject> OnNewSegmentAdded;
 
     [SerializeField] private GameObject _roadPrefab;
 
@@ -59,6 +59,8 @@ public class RoadGenerator : MonoBehaviour
         CreateNextRoad();
     }
 
+
+
     private void CreateNextRoad()
     {
         Vector3 pos = Vector3.zero;
@@ -74,7 +76,12 @@ public class RoadGenerator : MonoBehaviour
 
         _roads.Add(generate);
 
+        SpawnedSegmentCount++;
+
+        Debug.Log($" Сегментов - {SpawnedSegmentCount}");
+        
         OnNewSegmentAdded?.Invoke(generate);
+
     }
 
     private GameObject InstantiateRoadSegment(Vector3 pos)
@@ -91,7 +98,7 @@ public class RoadGenerator : MonoBehaviour
         {
             generate = Instantiate(_roadPrefab, pos, Quaternion.identity);
 
-            SpawnedSegmentCount++;
+            
             
             _normalSegmentCount++;
 

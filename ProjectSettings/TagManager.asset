@@ -12,6 +12,7 @@ TagManager:
   - SpecialZoneExit
   - SpecialZone
   - BoxCoin
+  - Wire
   layers:
   - Default
   - TransparentFX

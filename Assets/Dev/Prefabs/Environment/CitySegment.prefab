@@ -1193,8 +1193,8 @@ Transform:
   - {fileID: 3928100309385696138}
   - {fileID: 9085267504578297306}
   - {fileID: 1583795747006313382}
-  - {fileID: 3154281908721391479}
   - {fileID: 8486693866186780927}
+  - {fileID: 3154281908721391479}
   - {fileID: 8932492230232958020}
   - {fileID: 5165131595057333149}
   - {fileID: 5845183503964119715}
@@ -1359,7 +1359,7 @@ PrefabInstance:
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _wirePrefab
       value: 
-      objectReference: {fileID: 4542520664345845632, guid: c1c271e23eb91e9409e5f63554ef2da8, type: 3}
+      objectReference: {fileID: 767157933296354679, guid: d62a9047cc5b59b41b63b447180f28e3, type: 3}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _spawnInterval
       value: 0.1
@@ -1373,8 +1373,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
+      propertyPath: _diagonalSegmentStart
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalWireDuration
-      value: 200
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _minDistanceBetweenObjects
@@ -1390,7 +1394,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _initialHorizontalWireDuration
-      value: 100
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _spawnPointsHouse1.Array.data[0]
@@ -1696,7 +1700,7 @@ PrefabInstance:
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _wirePrefab
       value: 
-      objectReference: {fileID: 4542520664345845632, guid: c1c271e23eb91e9409e5f63554ef2da8, type: 3}
+      objectReference: {fileID: 767157933296354679, guid: d62a9047cc5b59b41b63b447180f28e3, type: 3}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _spawnInterval
       value: 0.1
@@ -1710,8 +1714,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
+      propertyPath: _diagonalSegmentStart
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalWireDuration
-      value: 200
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _minDistanceBetweenObjects
@@ -1727,7 +1735,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _initialHorizontalWireDuration
-      value: 100
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _spawnPointsHouse1.Array.data[0]
@@ -2418,7 +2426,7 @@ PrefabInstance:
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _wirePrefab
       value: 
-      objectReference: {fileID: 4542520664345845632, guid: c1c271e23eb91e9409e5f63554ef2da8, type: 3}
+      objectReference: {fileID: 767157933296354679, guid: d62a9047cc5b59b41b63b447180f28e3, type: 3}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _spawnInterval
       value: 0.1
@@ -2432,8 +2440,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
+      propertyPath: _diagonalSegmentStart
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalWireDuration
-      value: 200
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _minDistanceBetweenObjects
@@ -2449,7 +2461,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _initialHorizontalWireDuration
-      value: 100
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _spawnPointsHouse1.Array.data[0]
@@ -3140,7 +3152,7 @@ PrefabInstance:
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _wirePrefab
       value: 
-      objectReference: {fileID: 4542520664345845632, guid: c1c271e23eb91e9409e5f63554ef2da8, type: 3}
+      objectReference: {fileID: 767157933296354679, guid: d62a9047cc5b59b41b63b447180f28e3, type: 3}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _spawnInterval
       value: 0.1
@@ -3154,8 +3166,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
+      propertyPath: _diagonalSegmentStart
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalWireDuration
-      value: 200
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _minDistanceBetweenObjects
@@ -3171,7 +3187,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _initialHorizontalWireDuration
-      value: 100
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _spawnPointsHouse1.Array.data[0]
@@ -3410,7 +3426,7 @@ PrefabInstance:
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _wirePrefab
       value: 
-      objectReference: {fileID: 4542520664345845632, guid: c1c271e23eb91e9409e5f63554ef2da8, type: 3}
+      objectReference: {fileID: 767157933296354679, guid: d62a9047cc5b59b41b63b447180f28e3, type: 3}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _spawnInterval
       value: 0.1
@@ -3424,8 +3440,12 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
+      propertyPath: _diagonalSegmentStart
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalWireDuration
-      value: 200
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _minDistanceBetweenObjects
@@ -3441,7 +3461,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _initialHorizontalWireDuration
-      value: 100
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _spawnPointsHouse1.Array.data[0]
