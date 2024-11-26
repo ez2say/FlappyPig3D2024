@@ -320,8 +320,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _prefabs:
   - {fileID: 3079797136195614027, guid: cfc3962b40dda70449775c58bac7df12, type: 3}
-  _spawnInterval: 1
-  _maxObjectCount: 10
+  _spawnInterval: 0.2
+  _maxObjectCount: 5
   _spawnPoints:
   - {fileID: 2011295954501965658}
   - {fileID: 850207766353104419}
