@@ -1374,7 +1374,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalSegmentStart
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalWireDuration
@@ -1715,7 +1715,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalSegmentStart
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalWireDuration
@@ -2441,7 +2441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalSegmentStart
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalWireDuration
@@ -3167,7 +3167,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalSegmentStart
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalWireDuration
@@ -3441,7 +3441,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalSegmentStart
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 527741656263496134, guid: 97c5e3032d06fa24f96a8d604500dd44, type: 3}
       propertyPath: _diagonalWireDuration

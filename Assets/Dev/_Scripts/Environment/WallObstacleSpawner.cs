@@ -12,10 +12,10 @@ public class WallObstacleSpawner : BaseSpawner
     [SerializeField] protected float _minDistanceBetweenObjects = 2f;
     [SerializeField] private int _diagonalSegmentStart = 5; // Спустя сколько сегментов спаунить диагональные провода
 
-    private int _currentSegmentIndex = 0;
     private int _wiresSpawnedInCurrentSegment = 0;
 
     private RoadGenerator _roadGenerator;
+    private int _segmentIndexes = 0;
 
     protected override void Start()
     {
@@ -24,26 +24,14 @@ public class WallObstacleSpawner : BaseSpawner
 
         if (_roadGenerator != null)
         {
-            _roadGenerator.OnNewSegmentAdded += OnNewSegmentAdded;
+            _segmentIndexes = _roadGenerator.ManageRoads();
+            Debug.Log($"fsafsafs{_segmentIndexes}");
         }
         else
         {
             Debug.LogError("RoadGenerator not found on any GameObject!");
         }
-    }
 
-    private void OnDestroy()
-    {
-        if (_roadGenerator != null)
-        {
-            _roadGenerator.OnNewSegmentAdded -= OnNewSegmentAdded;
-        }
-    }
-
-    private void OnNewSegmentAdded(GameObject newSegment)
-    {
-        _currentSegmentIndex = _roadGenerator.SpawnedSegmentCount;
-        Debug.Log($"Spawned Segment Count: {_currentSegmentIndex}");
         StartCoroutine(SpawnObjects());
     }
 
@@ -56,7 +44,7 @@ public class WallObstacleSpawner : BaseSpawner
                 int horizontalWireCount = 0;
                 int diagonalWireCount = 0;
 
-                if (_currentSegmentIndex < _diagonalSegmentStart)
+                if (_segmentIndexes < _diagonalSegmentStart)
                 {
                     horizontalWireCount = _maxWiresPerSegment;
                 }
@@ -225,7 +213,6 @@ public class WallObstacleSpawner : BaseSpawner
 
     public void MoveToNextSegment()
     {
-        _currentSegmentIndex++;
         _wiresSpawnedInCurrentSegment = 0;
     }
 }

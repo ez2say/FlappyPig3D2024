@@ -1,34 +1,23 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class RoadGenerator : MonoBehaviour
-{   
+{
     public int SpawnedSegmentCount { get; private set; } = 0;
 
-    
-    public event Action<GameObject> OnNewSegmentAdded;
-
     [SerializeField] private GameObject _roadPrefab;
-
     [SerializeField] private GameObject _specialRoadPrefab;
-
     private List<GameObject> _roads = new List<GameObject>();
-
     [SerializeField] private int _maxRoadCount = 5;
-
     [SerializeField] private float _segmentLength = 100f;
-
     [SerializeField] private int _specialZoneLength = 3;
-
     private int _normalSegmentCount = 0;
-
     private bool _specialZoneSpawned = false;
-
     private int _specialZoneSegmentIndex = 0;
 
-    
+    private int _zoneSegmentIndex = 0;
+
+    private List<int> _segmentIndexes = new List<int>();
 
     private void Start()
     {
@@ -53,13 +42,10 @@ public class RoadGenerator : MonoBehaviour
     private void DestroyRoadSegment()
     {
         Destroy(_roads[0]);
-
         _roads.RemoveAt(0);
-
+        _segmentIndexes.RemoveAt(0);
         CreateNextRoad();
     }
-
-
 
     private void CreateNextRoad()
     {
@@ -71,17 +57,11 @@ public class RoadGenerator : MonoBehaviour
         }
 
         GameObject generate = InstantiateRoadSegment(pos);
-
         generate.transform.SetParent(transform);
-
         _roads.Add(generate);
-
         SpawnedSegmentCount++;
-
+        _segmentIndexes.Add(SpawnedSegmentCount);
         Debug.Log($" Сегментов - {SpawnedSegmentCount}");
-        
-        OnNewSegmentAdded?.Invoke(generate);
-
     }
 
     private GameObject InstantiateRoadSegment(Vector3 pos)
@@ -91,23 +71,25 @@ public class RoadGenerator : MonoBehaviour
         if (_specialZoneSpawned)
         {
             generate = Instantiate(_specialRoadPrefab, pos, Quaternion.identity);
-            
             ManageSpecialZoneSegment(generate);
+
         }
         else
         {
             generate = Instantiate(_roadPrefab, pos, Quaternion.identity);
 
             
-            
             _normalSegmentCount++;
 
+            _zoneSegmentIndex++;
+
             Debug.Log($" Сегментов - {SpawnedSegmentCount}");
+
+            Debug.Log($"ManageRoads{_zoneSegmentIndex}");
 
             if (_normalSegmentCount >= 6)
             {
                 _normalSegmentCount = 0;
-
                 _specialZoneSpawned = true;
             }
         }
@@ -125,32 +107,27 @@ public class RoadGenerator : MonoBehaviour
             if (_specialZoneSegmentIndex == 1)
             {
                 specialZoneSegment.enterCollider.gameObject.SetActive(true);
-
                 specialZoneSegment.exitCollider.gameObject.SetActive(false);
             }
             else if (_specialZoneSegmentIndex == _specialZoneLength)
             {
                 specialZoneSegment.enterCollider.gameObject.SetActive(true);
-
                 specialZoneSegment.exitCollider.gameObject.SetActive(true);
-
                 _specialZoneSpawned = false;
-
                 _specialZoneSegmentIndex = 0;
             }
             else
             {
                 specialZoneSegment.enterCollider.gameObject.SetActive(true);
-
                 specialZoneSegment.exitCollider.gameObject.SetActive(false);
             }
         }
     }
 
+
     public void ResetLevel()
     {
         ClearRoads();
-
         InitializeLevel();
     }
 
@@ -159,20 +136,18 @@ public class RoadGenerator : MonoBehaviour
         while (_roads.Count > 0)
         {
             Destroy(_roads[0]);
-
             _roads.RemoveAt(0);
+            _segmentIndexes.RemoveAt(0);
         }
     }
 
     private void InitializeLevel()
     {
         SpawnedSegmentCount = 0;
-
         _normalSegmentCount = 0;
-
         _specialZoneSpawned = false;
-
         _specialZoneSegmentIndex = 0;
+        _zoneSegmentIndex = 0;
 
         for (int i = 0; i < _maxRoadCount; i++)
         {
@@ -183,5 +158,10 @@ public class RoadGenerator : MonoBehaviour
     public int GetMaxRoadCount()
     {
         return _maxRoadCount;
+    }
+
+    public int ManageRoads()
+    {
+       return _zoneSegmentIndex;
     }
 }
