@@ -6,11 +6,16 @@ public class WallObstacleSpawner : BaseSpawner
 {
     [Header("Wall Spawner Settings")]
     [SerializeField] private List<Transform> _spawnPointsHouse1 = new List<Transform>();
+
     [SerializeField] private List<Transform> _spawnPointsHouse2 = new List<Transform>();
+
     [SerializeField] private int _maxWiresPerSegment = 3;
+
     [SerializeField] private GameObject _wirePrefab;
+
     [SerializeField] protected float _minDistanceBetweenObjects = 2f;
-    [SerializeField] private int _diagonalSegmentStart = 5; // Спустя сколько сегментов спаунить диагональные провода
+
+    [SerializeField] private int _diagonalSegmentStart = 5;
 
     private int _wiresSpawnedInCurrentSegment = 0;
 
@@ -21,6 +26,7 @@ public class WallObstacleSpawner : BaseSpawner
     {
         base.Start();
         _roadGenerator = FindObjectOfType<RoadGenerator>();
+        //Я ЗНАЮ ЧТО ЭТА ШТУКА ПЛОХАЯ, Я ПЕРЕДЕЛАЮ , ЭТО РЕСУРСОЗАТРАТНО И ВООБЩЕ ФУ
 
         if (_roadGenerator != null)
         {
@@ -102,41 +108,26 @@ public class WallObstacleSpawner : BaseSpawner
 
     private void SpawnWire(Vector3 startPosition, Vector3 endPosition)
     {
-        // Создаем провод на начальной позиции
         GameObject wire = Instantiate(_wirePrefab, startPosition, Quaternion.identity);
 
-        // Получаем компонент LineRenderer
         LineRenderer lineRenderer = wire.GetComponent<LineRenderer>();
 
-        if (lineRenderer == null)
-        {
-            Debug.LogError("Нет Line Renderer");
-            return;
-        }
-
-        // Устанавливаем количество позиций в LineRenderer
         lineRenderer.positionCount = 2;
         lineRenderer.SetPosition(0, startPosition);
         lineRenderer.SetPosition(1, endPosition);
 
-        // Вычисляем направление от начальной точки к конечной
         Vector3 direction = endPosition - startPosition;
 
-        // Вычисляем поворот, который будет смотреть в направлении от startPosition к endPosition
         Quaternion rotation = Quaternion.LookRotation(direction, Vector3.up);
 
-        // Применяем поворот к проводу
         wire.transform.rotation = rotation;
 
-        // Масштабируем провод, чтобы он соответствовал длине между точками
         float wireLength = direction.magnitude;
-        wire.transform.localScale = new Vector3(wire.transform.localScale.x, wire.transform.localScale.y, wireLength);
+        wire.transform.localScale = new Vector3(wire.transform.localScale.x * 0.5f, wire.transform.localScale.y * 0.5f, wireLength);
 
-        // Перемещаем провод на среднюю точку между двумя точками
         Vector3 midPoint = (startPosition + endPosition) / 2f;
         wire.transform.position = midPoint;
 
-        // Добавляем позиции в список
         AddObjectPosition(startPosition);
         AddObjectPosition(endPosition);
     }

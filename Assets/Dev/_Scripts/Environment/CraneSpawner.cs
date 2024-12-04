@@ -1,85 +1,65 @@
-// using System.Collections;
-// using System.Collections.Generic;
-// using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-// public class CraneSpawner : BaseSpawner
-// {
-//     [Header("Crane Spawner Settings")]
-//     [SerializeField] private List<Transform> _spawnPoints = new List<Transform>();
-//     [SerializeField] private float _spawnIntervalMin = 5f;
-//     [SerializeField] private float _spawnIntervalMax = 10f;
-//     [SerializeField] private float _spawnHeightMin = 10f;
-//     [SerializeField] private float _spawnHeightMax = 20f;
+public class CraneSpawner : BaseSpawner
+{
+    [Header("Crane Spawner Settings")]
+    [SerializeField] private BoxCollider _spawnArea;
+    [SerializeField] private List<AnimationClip> _animationClips;
 
-//     [SerializeField] protected float _minDistanceBetweenObjects = 2f;
-    
-//     protected override IEnumerator SpawnObjects()
-//     {
-//         while (true)
-//         {
-//             if (_spawnedObjectPositions.Count < _maxObjectCount)
-//             {
-//                 Vector3 spawnPosition = GetRandomSpawnPoint();
+    protected override IEnumerator SpawnObjects()
+    {
+        while (true)
+        {
+            if (_spawnedObjectPositions.Count < _maxObjectCount)
+            {
+                Vector3 spawnPosition = GetRandomSpawnPosition();
 
-//                 if (IsPositionValid(spawnPosition))
-//                 {
-//                     InstantiateObject(spawnPosition);
-//                 }
-//             }
+                GameObject obj = InstantiateObject(spawnPosition);
 
-//             yield return new WaitForSeconds(Random.Range(_spawnIntervalMin, _spawnIntervalMax));
-//         }
-//     }
+                PlayRandomAnimation(obj);
+            }
 
-//     private Vector3 GetRandomSpawnPoint()
-//     {
-//         if (_spawnPoints.Count == 0)
-//         {
-//             Debug.LogError("No spawn points defined for CraneSpawner.");
-//             return Vector3.zero;
-//         }
+            yield return new WaitForSeconds(_spawnInterval);
+        }
+    }
 
-//         int randomIndex = Random.Range(0, _spawnPoints.Count);
-//         Vector3 basePosition = _spawnPoints[randomIndex].position;
+    private Vector3 GetRandomSpawnPosition()
+    {
+        Vector3 extents = _spawnArea.bounds.extents;
+        Vector3 randomPosition = new Vector3(
+            Random.Range(-extents.x, extents.x),
+            Random.Range(-extents.y, extents.y),
+            Random.Range(-extents.z, extents.z)
+        );
 
-//         // Добавляем случайную высоту
-//         float randomHeight = Random.Range(_spawnHeightMin, _spawnHeightMax);
-//         Vector3 spawnPosition = new Vector3(basePosition.x, randomHeight, basePosition.z);
+        randomPosition += _spawnArea.transform.position;
+        randomPosition.y -= extents.y;
 
-//         return spawnPosition;
-//     }
+        return randomPosition;
+    }
 
-//     protected override void InstantiateObject(Vector3 spawnPosition)
-//     {
-//         int randomIndex = GetRandomObjectIndex();
+    private void PlayRandomAnimation(GameObject obj)
+    {
+        if (_animationClips.Count > 0)
+        {
+            AnimationClip randomClip = _animationClips[Random.Range(0, _animationClips.Count)];
+            Animation animation = obj.GetComponent<Animation>();
 
-//         GameObject obj = CreateObject(randomIndex, spawnPosition);
-
-//         AddObjectPosition(spawnPosition);
-
-//         obj.transform.SetParent(transform);
-
-//         // Поворот по оси X на -90 градусов
-//         obj.transform.rotation = Quaternion.Euler(-90f, 0f, 0f);
-//     }
-
-//     private bool IsPositionValid(Vector3 position)
-//     {
-//         // Проверка на расстояние между объектами
-//         foreach (Vector3 spawnedPosition in _spawnedObjectPositions)
-//         {
-//             if (Vector3.Distance(position, spawnedPosition) < _minDistanceBetweenObjects)
-//             {
-//                 return false;
-//             }
-//         }
-
-//         // Проверка на столкновение с другими объектами
-//         if (Physics.CheckSphere(position, _minDistanceBetweenObjects))
-//         {
-//             return false;
-//         }
-
-//         return true;
-//     }
-// }
+            if (animation != null)
+            {
+                animation.clip = randomClip;
+                animation.Play();
+            }
+            else
+            {
+                Debug.LogWarning("No Animation component found on the spawned object.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("No animation clips assigned to the CraneSpawner.");
+        }
+    }
+}
