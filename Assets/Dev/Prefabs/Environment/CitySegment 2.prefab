@@ -125,7 +125,7 @@ MonoBehaviour:
   - {fileID: 6877898653112499358}
   _minDroneSpeed: 5
   _maxDroneSpeed: 15
-  _boxPrefab: {fileID: 597950818585922435, guid: aa074047be2871e4cae033535c953f6a, type: 3}
+  _boxPrefab: {fileID: 2289705418965232183, guid: 2f3e71dc82baa4d4e8648268ceeba7cd, type: 3}
 --- !u!1 &2497237943875265258
 GameObject:
   m_ObjectHideFlags: 0
@@ -581,7 +581,7 @@ Transform:
   m_GameObject: {fileID: 7789202919928900172}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -13.9, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

@@ -30,7 +30,7 @@ public class CraneSpawner : BaseSpawner
         Vector3 extents = _spawnArea.bounds.extents;
         Vector3 randomPosition = new Vector3(
             Random.Range(-extents.x, extents.x),
-            Random.Range(-extents.y, extents.y),
+            -30,
             Random.Range(-extents.z, extents.z)
         );
 
@@ -44,22 +44,13 @@ public class CraneSpawner : BaseSpawner
     {
         if (_animationClips.Count > 0)
         {
-            AnimationClip randomClip = _animationClips[Random.Range(0, _animationClips.Count)];
-            Animation animation = obj.GetComponent<Animation>();
+            Animator animator = obj.GetComponent<Animator>();
 
-            if (animation != null)
-            {
-                animation.clip = randomClip;
-                animation.Play();
-            }
-            else
-            {
-                Debug.LogWarning("No Animation component found on the spawned object.");
-            }
-        }
-        else
-        {
-            Debug.LogWarning("No animation clips assigned to the CraneSpawner.");
+            AnimationClip randomClip = _animationClips[Random.Range(0, _animationClips.Count)];
+            Debug.Log($"Выбрана анимация {randomClip}");
+
+            animator.Play(randomClip.name);
+            
         }
     }
 }

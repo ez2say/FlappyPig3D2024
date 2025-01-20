@@ -9,6 +9,8 @@ public class RoadGenerator : MonoBehaviour
 
     [SerializeField] private GameObject _specialRoadPrefab;
 
+    [SerializeField] private GameObject _craneRoadPrefab;
+
     [SerializeField] private List<Material> _buildingMaterials;
 
     private List<GameObject> _roads = new List<GameObject>();
@@ -27,9 +29,13 @@ public class RoadGenerator : MonoBehaviour
 
     private int _zoneSegmentIndex = 0;
 
+    private int _craneSegmentCount = 0;
+
     private List<int> _segmentIndexes = new List<int>();
 
     private bool isGameStarted = false;
+
+    private bool _isCraneGenerate = false;
 
     private void Update()
     {
@@ -74,8 +80,6 @@ public class RoadGenerator : MonoBehaviour
 
         _roads.Add(generate);
 
-        SpawnedSegmentCount++;
-
         _segmentIndexes.Add(SpawnedSegmentCount);
 
         Debug.Log($" Сегментов - {SpawnedSegmentCount}");
@@ -83,23 +87,43 @@ public class RoadGenerator : MonoBehaviour
 
     private GameObject InstantiateRoadSegment(Vector3 pos)
     {
-        GameObject generate;
+        GameObject generate = null;
 
-        if (_specialZoneSpawned)
+        if (SpawnedSegmentCount > 0 && SpawnedSegmentCount % 18 == 0)
+        {
+            _isCraneGenerate = true;
+        }
+
+        if (_isCraneGenerate && _craneSegmentCount < 3)
+        {
+            generate = Instantiate(_craneRoadPrefab, pos, Quaternion.identity);
+            _craneSegmentCount++;
+
+            Debug.Log($"{_craneSegmentCount}");
+
+            if (_craneSegmentCount >= 3)
+            {
+                _craneSegmentCount = 0;
+                _isCraneGenerate = false;
+            }
+        }
+        else if (_specialZoneSpawned && _zoneSegmentIndex < 3)
         {
             generate = Instantiate(_specialRoadPrefab, pos, Quaternion.identity);
-
             ManageSpecialZoneSegment(generate);
+            _zoneSegmentIndex++;
+
+            if (_zoneSegmentIndex >= 3)
+            {
+                _specialZoneSpawned = false;
+                _zoneSegmentIndex = 0;
+            }
         }
         else
         {
             generate = Instantiate(_roadPrefab, pos, Quaternion.identity);
 
             _normalSegmentCount++;
-            _zoneSegmentIndex++;
-
-            Debug.Log($" Сегментов - {SpawnedSegmentCount}");
-            Debug.Log($"ManageRoads{_zoneSegmentIndex}");
 
             if (_normalSegmentCount >= 6)
             {
@@ -109,6 +133,8 @@ public class RoadGenerator : MonoBehaviour
 
             PaintBuildings(generate);
         }
+
+        SpawnedSegmentCount++;
 
         return generate;
     }
@@ -169,8 +195,6 @@ public class RoadGenerator : MonoBehaviour
                     renderer.material = randomMaterial;
 
                     houseMaterials[building.parent] = randomMaterial;
-
-                    Debug.Log($"Дом {building.parent.name} покрашен в цвет: {randomMaterial.name}");
                 }
             }
         }

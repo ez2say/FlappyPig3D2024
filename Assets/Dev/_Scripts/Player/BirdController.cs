@@ -6,7 +6,7 @@ public class BirdController : MonoBehaviour
     [Header("Movement Settings")]
     [SerializeField] private float _forwardSpeed = 3f;
     [SerializeField] private float _jumpForce = 5f;
-    [SerializeField] private CinemachineVirtualCamera _mainCamera; // Виртуальная камера для обычного вида
+    [SerializeField] private CinemachineVirtualCamera _mainCamera;
     [SerializeField] private CinemachineVirtualCamera _2DCamera;
 
     private Rigidbody _rb;
@@ -22,13 +22,11 @@ public class BirdController : MonoBehaviour
     {
         if (_is2DView)
         {
-            // В 2D виде игрок может двигаться только вверх и вниз с помощью прыжков
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 _rb.velocity = new Vector3(_rb.velocity.x, _jumpForce, _forwardSpeed);
             }
 
-            // Автоматически перемещаем игрока в центр карты по горизонтали
             Vector3 newPosition = transform.position;
             newPosition.x = 8;
             transform.position = newPosition;
@@ -87,13 +85,11 @@ public class BirdController : MonoBehaviour
         _is2DView = to2D;
         if (to2D)
         {
-            // Переключаем камеру в вид 2D
             _mainCamera.Priority = 0;
             _2DCamera.Priority = 1;
         }
         else
         {
-            // Возвращаем камеру в исходное положение
             _mainCamera.Priority = 1;
             _2DCamera.Priority = 0;
         }

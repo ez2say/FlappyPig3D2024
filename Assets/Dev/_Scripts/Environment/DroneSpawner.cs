@@ -79,14 +79,22 @@ public class DroneSpawner : BaseSpawner
 
     private GameObject InstantiateBox(GameObject drone, GameObject previousBox, Rigidbody rb, int index)
     {
-        GameObject box = Instantiate(_boxPrefab, drone.transform.position - new Vector3(0, 1 + index, 0), Quaternion.identity);
+        Vector3 localPosition = new Vector3(0, 1.5f - (2 * index), 0);
         
+        GameObject box = Instantiate(
+            _boxPrefab, 
+
+            drone.transform.position + drone.transform.TransformDirection(localPosition), 
+
+            Quaternion.Euler(-90, 0, 0)
+        );
+
         FixedJoint joint = box.AddComponent<FixedJoint>();
-        
+
         ConfigureJoint(joint, previousBox, rb);
-        
-        box.transform.SetParent(drone.transform);
-       
+
+        box.transform.SetParent(drone.transform, worldPositionStays: true);
+
         return box;
     }
 
@@ -96,13 +104,13 @@ public class DroneSpawner : BaseSpawner
         {
             joint.connectedBody = previousBox.GetComponent<Rigidbody>();
             
-            joint.anchor = new Vector3(0, -2, 0);
+            joint.anchor = Vector3.zero;
         }
         else
         {
             joint.connectedBody = rb;
             
-            joint.anchor = new Vector3(0, 1, 0);
+            joint.anchor = Vector3.zero;
         }
     }
 

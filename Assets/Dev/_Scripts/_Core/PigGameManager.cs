@@ -6,18 +6,16 @@ public class PigGameManager : MonoBehaviour
     public BirdController birdController;
     public GameObject startButton;
     public GameObject exitButton;
-    public RoadGenerator roadGenerator; // Ссылка на RoadGenerator
-    public Rigidbody pigRigidbody; // Ссылка на Rigidbody свинки
-    public float forwardImpulse = 5f; // Импульс для движения вперед
+    public RoadGenerator roadGenerator;
+    public Rigidbody pigRigidbody;
+    public float forwardImpulse = 5f;
 
     private bool isGameStarted = false;
 
     void Start()
     {
-        // Изначально отключаем управление свинкой
         birdController.enabled = false;
 
-        // Очищаем параметр StartGame, чтобы избежать автоматического запуска анимации
         pigAnimator.ResetTrigger("StartGame");
     }
 
@@ -29,10 +27,8 @@ public class PigGameManager : MonoBehaviour
             startButton.SetActive(false);
             exitButton.SetActive(false);
 
-            // Запускаем анимацию подпрыгивания и разворота свинки
             pigAnimator.SetTrigger("StartGame");
 
-            // После завершения анимации включаем управление свинкой
             Invoke("EnableBirdController", pigAnimator.GetCurrentAnimatorStateInfo(0).length);
 
             // Запускаем генерацию дороги
