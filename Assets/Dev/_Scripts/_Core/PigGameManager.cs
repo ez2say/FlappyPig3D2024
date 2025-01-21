@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class PigGameManager : MonoBehaviour
 {
@@ -6,6 +7,9 @@ public class PigGameManager : MonoBehaviour
     public BirdController birdController;
     public GameObject startButton;
     public GameObject exitButton;
+    public GameObject apple;
+
+    public TextMeshProUGUI text;
     public RoadGenerator roadGenerator;
     public Rigidbody pigRigidbody;
     public float forwardImpulse = 5f;
@@ -17,6 +21,10 @@ public class PigGameManager : MonoBehaviour
         birdController.enabled = false;
 
         pigAnimator.ResetTrigger("StartGame");
+        
+        text.gameObject.SetActive(false);
+
+        apple.SetActive(false);
     }
 
     public void StartGame()
@@ -31,7 +39,10 @@ public class PigGameManager : MonoBehaviour
 
             Invoke("EnableBirdController", pigAnimator.GetCurrentAnimatorStateInfo(0).length);
 
-            // Запускаем генерацию дороги
+            text.gameObject.SetActive(true);
+
+            apple.SetActive(true);
+
             roadGenerator.StartRoadGeneration();
         }
     }
@@ -46,5 +57,7 @@ public class PigGameManager : MonoBehaviour
         birdController.enabled = true;
 
         pigAnimator.enabled = false;
+
+        birdController.SetScoreText(text);
     }
 }

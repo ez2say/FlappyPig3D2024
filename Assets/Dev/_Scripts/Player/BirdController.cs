@@ -1,5 +1,6 @@
 using UnityEngine;
 using Cinemachine;
+using TMPro;
 
 public class BirdController : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class BirdController : MonoBehaviour
     [SerializeField] private float _jumpForce = 5f;
     [SerializeField] private CinemachineVirtualCamera _mainCamera;
     [SerializeField] private CinemachineVirtualCamera _2DCamera;
+
+    private TextMeshProUGUI _scoreText; 
 
     private Rigidbody _rb;
     private int _score = 0;
@@ -44,14 +47,25 @@ public class BirdController : MonoBehaviour
             _rb.velocity = new Vector3(horizontalInput * _forwardSpeed, _rb.velocity.y, _forwardSpeed);
         }
     }
+    public void SetScoreText(TextMeshProUGUI text)
+    {
+        _scoreText = text;
+
+        UpdateScoreText();
+    }
+
+    private void UpdateScoreText()
+    {
+        _scoreText.text = $"Очки:{_score} ";
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Coin"))
         {
             _score += 10;
-            Debug.Log("Подобрана монетка! Очки: " + _score);
             Destroy(other.gameObject);
+            UpdateScoreText();
         }
 
         if (other.CompareTag("SpecialZoneEnter"))
@@ -62,8 +76,8 @@ public class BirdController : MonoBehaviour
         if (other.CompareTag("BoxCoin"))
         {
             _score += 100;
-            Debug.Log("Подобрана коробка монет! Очки: " + _score);
             Destroy(other.gameObject);
+            UpdateScoreText();
         }
 
         if (other.CompareTag("Wire"))
@@ -112,6 +126,8 @@ public class BirdController : MonoBehaviour
     {
         Die();
     }
+
+    
 
     private void Die()
     {

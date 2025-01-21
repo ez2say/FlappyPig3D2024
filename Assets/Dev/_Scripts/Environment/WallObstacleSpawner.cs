@@ -108,7 +108,7 @@ public class WallObstacleSpawner : BaseSpawner
 
     private void SpawnWire(Vector3 startPosition, Vector3 endPosition)
     {
-        GameObject wire = Instantiate(_wirePrefab, startPosition, Quaternion.identity);
+        GameObject wire = Instantiate(_wirePrefab, startPosition, Quaternion.identity, transform);
 
         LineRenderer lineRenderer = wire.GetComponent<LineRenderer>();
 
