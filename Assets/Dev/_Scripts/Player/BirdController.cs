@@ -11,14 +11,24 @@ public class BirdController : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera _2DCamera;
 
     private TextMeshProUGUI _scoreText; 
-
     private Rigidbody _rb;
     private int _score = 0;
     private bool _is2DView = false;
 
+    private IInputController _inputController;
+
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
+
+        if(Application.isMobilePlatform)
+        {
+            _inputController = new MobileInputController();
+        }
+        else
+        {
+            _inputController = new KeyboardInputController();
+        }
     }
 
     void Update()
@@ -38,12 +48,12 @@ public class BirdController : MonoBehaviour
         {
             _rb.velocity = new Vector3(_rb.velocity.x, _rb.velocity.y, _forwardSpeed);
 
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (_inputController.IsJumpInput())
             {
                 _rb.velocity = new Vector3(_rb.velocity.x, _jumpForce, _forwardSpeed);
             }
 
-            float horizontalInput = Input.GetAxis("Horizontal");
+            float horizontalInput = _inputController.GetHorizontalInput();
             _rb.velocity = new Vector3(horizontalInput * _forwardSpeed, _rb.velocity.y, _forwardSpeed);
         }
     }
