@@ -6,9 +6,7 @@ public abstract class BaseSpawner : MonoBehaviour
 {
     [Header("Spawner Settings")]
     [SerializeField] protected GameObject[] _prefabs;
-
     [SerializeField] protected float _spawnInterval = 2f;
-    
     [SerializeField] protected int _maxObjectCount = 10;
 
     protected List<Vector3> _spawnedObjectPositions = new List<Vector3>();
@@ -23,13 +21,9 @@ public abstract class BaseSpawner : MonoBehaviour
     protected virtual GameObject InstantiateObject(Vector3 spawnPosition)
     {
         int randomIndex = GetRandomObjectIndex();
-
         GameObject obj = CreateObject(randomIndex, spawnPosition);
-
         AddObjectPosition(spawnPosition);
-
         obj.transform.SetParent(transform);
-
         return obj;
     }
 

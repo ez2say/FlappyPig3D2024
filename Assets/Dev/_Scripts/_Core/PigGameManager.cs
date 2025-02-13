@@ -9,6 +9,8 @@ public class PigGameManager : MonoBehaviour
     public GameObject exitButton;
     public GameObject apple;
 
+    [SerializeField] private GameObject _pauseCanvas;
+
     public TextMeshProUGUI text;
     public RoadGenerator roadGenerator;
     public Rigidbody pigRigidbody;
@@ -25,6 +27,8 @@ public class PigGameManager : MonoBehaviour
         text.gameObject.SetActive(false);
 
         apple.SetActive(false);
+
+        _pauseCanvas.SetActive(false);
     }
 
     public void StartGame()
@@ -34,6 +38,8 @@ public class PigGameManager : MonoBehaviour
             isGameStarted = true;
             startButton.SetActive(false);
             exitButton.SetActive(false);
+
+            _pauseCanvas.SetActive(true);
 
             pigAnimator.SetTrigger("StartGame");
 
