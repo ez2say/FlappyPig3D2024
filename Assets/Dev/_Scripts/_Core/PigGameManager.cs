@@ -15,6 +15,7 @@ public class PigGameManager : MonoBehaviour
     public RoadGenerator roadGenerator;
     public Rigidbody pigRigidbody;
     public float forwardImpulse = 5f;
+    private ScoreManager _scoreManager;
 
     private bool isGameStarted = false;
 
@@ -29,6 +30,9 @@ public class PigGameManager : MonoBehaviour
         apple.SetActive(false);
 
         _pauseCanvas.SetActive(false);
+
+        _scoreManager = new ScoreManager();
+        _scoreManager.SetScoreText(text);
     }
 
     public void StartGame()
@@ -64,6 +68,6 @@ public class PigGameManager : MonoBehaviour
 
         pigAnimator.enabled = false;
 
-        birdController.SetScoreText(text);
+        birdController.SetScoreManager(_scoreManager);
     }
 }

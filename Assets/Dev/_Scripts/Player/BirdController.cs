@@ -1,27 +1,20 @@
 using UnityEngine;
-using Cinemachine;
-using TMPro;
 
 public class BirdController : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float _forwardSpeed = 3f;
     [SerializeField] private float _jumpForce = 5f;
-    [SerializeField] private CinemachineVirtualCamera _mainCamera;
-    [SerializeField] private CinemachineVirtualCamera _2DCamera;
 
-    private TextMeshProUGUI _scoreText; 
     private Rigidbody _rb;
-    private int _score = 0;
-    private bool _is2DView = false;
-
     private IInputController _inputController;
+    private CameraManager _cameraManager;
+    private ScoreManager _scoreManager;
 
-    void Start()
+    private void Start()
     {
         _rb = GetComponent<Rigidbody>();
-
-        if(Application.isMobilePlatform)
+        if (Application.isMobilePlatform)
         {
             _inputController = new MobileInputController();
         }
@@ -29,53 +22,44 @@ public class BirdController : MonoBehaviour
         {
             _inputController = new KeyboardInputController();
         }
+
+        _cameraManager = FindObjectOfType<CameraManager>();
     }
 
-    void Update()
+    public void SetScoreManager(ScoreManager scoreManager)
     {
-        if (_is2DView)
+        _scoreManager = scoreManager;
+    }
+
+    private void Update()
+    {
+        if (_cameraManager.Is2DView())
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                _rb.velocity = new Vector3(_rb.velocity.x, _jumpForce, _forwardSpeed);
+                Jump();
             }
-
-            Vector3 newPosition = transform.position;
-            newPosition.x = 8;
-            transform.position = newPosition;
+            ConstrainXPosition();
         }
         else
         {
-            _rb.velocity = new Vector3(_rb.velocity.x, _rb.velocity.y, _forwardSpeed);
-
+            MoveForward();
             if (_inputController.IsJumpInput())
             {
-                _rb.velocity = new Vector3(_rb.velocity.x, _jumpForce, _forwardSpeed);
+                Jump();
             }
-
             float horizontalInput = _inputController.GetHorizontalInput();
-            _rb.velocity = new Vector3(horizontalInput * _forwardSpeed, _rb.velocity.y, _forwardSpeed);
+            MoveHorizontally(horizontalInput);
         }
-    }
-    public void SetScoreText(TextMeshProUGUI text)
-    {
-        _scoreText = text;
-
-        UpdateScoreText();
-    }
-
-    private void UpdateScoreText()
-    {
-        _scoreText.text = $"Очки:{_score} ";
     }
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"{other.name} with {other.tag}");
         if (other.CompareTag("Coin"))
         {
-            _score += 10;
-            Destroy(other.gameObject);
-            UpdateScoreText();
+            _scoreManager.AddScore(10);
+            UnityEngine.Object.Destroy(other.gameObject);
         }
 
         if (other.CompareTag("SpecialZoneEnter"))
@@ -85,9 +69,8 @@ public class BirdController : MonoBehaviour
 
         if (other.CompareTag("BoxCoin"))
         {
-            _score += 100;
-            Destroy(other.gameObject);
-            UpdateScoreText();
+            _scoreManager.AddScore(100);
+            UnityEngine.Object.Destroy(other.gameObject);
         }
 
         if (other.CompareTag("Wire"))
@@ -104,40 +87,45 @@ public class BirdController : MonoBehaviour
         }
     }
 
-    private void SwitchCameraView(bool to2D)
+    private void OnCollisionEnter(Collision collision)
     {
-        _is2DView = to2D;
-        if (to2D)
-        {
-            _mainCamera.Priority = 0;
-            _2DCamera.Priority = 1;
-        }
-        else
-        {
-            _mainCamera.Priority = 1;
-            _2DCamera.Priority = 0;
-        }
-    }
-
-    private void OnCollisionEnter(Collision other)
-    {
-        if (IsObstacleCollision(other))
+        if (collision.gameObject.CompareTag("Obstacle"))
         {
             HandleObstacleCollision();
         }
     }
 
-    private bool IsObstacleCollision(Collision other)
+    private void MoveForward()
     {
-        return other.gameObject.CompareTag("Obstacle");
+        _rb.velocity = new Vector3(_rb.velocity.x, _rb.velocity.y, _forwardSpeed);
     }
 
-    private void HandleObstacleCollision()
+    private void Jump()
+    {
+        _rb.velocity = new Vector3(_rb.velocity.x, _jumpForce, _forwardSpeed);
+    }
+
+    private void MoveHorizontally(float input)
+    {
+        _rb.velocity = new Vector3(input * _forwardSpeed, _rb.velocity.y, _forwardSpeed);
+    }
+
+    private void ConstrainXPosition()
+    {
+        Vector3 newPosition = transform.position;
+        newPosition.x = 8;
+        transform.position = newPosition;
+    }
+
+    public void SwitchCameraView(bool to2D)
+    {
+        _cameraManager?.SwitchCameraView(to2D);
+    }
+
+    public void HandleObstacleCollision()
     {
         Die();
     }
-
-    
 
     private void Die()
     {
