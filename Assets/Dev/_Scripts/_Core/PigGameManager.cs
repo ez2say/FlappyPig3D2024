@@ -11,6 +11,8 @@ public class PigGameManager : MonoBehaviour
 
     [SerializeField] private GameObject _pauseCanvas;
 
+    [SerializeField] private PauseMenuManager _pauseMenuManager;
+
     public TextMeshProUGUI text;
     public RoadGenerator roadGenerator;
     public Rigidbody pigRigidbody;
@@ -33,6 +35,8 @@ public class PigGameManager : MonoBehaviour
 
         _scoreManager = new ScoreManager();
         _scoreManager.SetScoreText(text);
+
+        _pauseMenuManager.DeathPanel();
     }
 
     public void StartGame()
@@ -69,5 +73,7 @@ public class PigGameManager : MonoBehaviour
         pigAnimator.enabled = false;
 
         birdController.SetScoreManager(_scoreManager);
+
+        _pauseMenuManager.Initialize(birdController, _scoreManager);
     }
 }

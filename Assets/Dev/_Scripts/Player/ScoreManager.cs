@@ -13,11 +13,16 @@ public class ScoreManager
 
     public void AddScore(int point)
     {
-        _score = point;
+        _score += point;
         UpdateScoreText();
     }
 
-    private void UpdateScoreText()
+    public int GetScore()
+    {
+        return _score;
+    }
+
+    public void UpdateScoreText()
     {
         _scoreText.text = $"{_score}";
     }

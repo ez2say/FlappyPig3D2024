@@ -1,6 +1,7 @@
 using UnityEngine;
+using System;
 
-public class BirdController : MonoBehaviour
+public class BirdController : MonoBehaviour, IDie
 {
     [Header("Movement Settings")]
     [SerializeField] private float _forwardSpeed = 3f;
@@ -10,6 +11,8 @@ public class BirdController : MonoBehaviour
     private IInputController _inputController;
     private CameraManager _cameraManager;
     private ScoreManager _scoreManager;
+
+    public event Action OnDie;
 
     private void Start()
     {
@@ -26,10 +29,7 @@ public class BirdController : MonoBehaviour
         _cameraManager = FindObjectOfType<CameraManager>();
     }
 
-    public void SetScoreManager(ScoreManager scoreManager)
-    {
-        _scoreManager = scoreManager;
-    }
+    
 
     private void Update()
     {
@@ -55,7 +55,6 @@ public class BirdController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"{other.name} with {other.tag}");
         if (other.CompareTag("Coin"))
         {
             _scoreManager.AddScore(10);
@@ -75,7 +74,7 @@ public class BirdController : MonoBehaviour
 
         if (other.CompareTag("Wire"))
         {
-            Debug.Log("Ударило током");
+            Die();
         }
     }
 
@@ -89,7 +88,7 @@ public class BirdController : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Obstacle"))
+        if (collision.gameObject.CompareTag("Obstacle") || collision.gameObject.CompareTag("Drone") || collision.gameObject.CompareTag("Balka"))
         {
             HandleObstacleCollision();
         }
@@ -127,8 +126,19 @@ public class BirdController : MonoBehaviour
         Die();
     }
 
+    public void SetScoreManager(ScoreManager scoreManager)
+    {
+        _scoreManager = scoreManager;
+    }
+
+    public void RegisterDeathListener(Action listener)
+    {
+        OnDie += listener;
+    }
+
     private void Die()
     {
-        Debug.Log("Умерла свинка, всёёёёёёёёё");
+        Debug.Log("Смееерть");
+        OnDie?.Invoke();
     }
 }

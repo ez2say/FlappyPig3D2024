@@ -1,13 +1,36 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PauseMenuManager : MonoBehaviour
 {
     public GameObject pauseMenuPanel;
 
     [SerializeField] private GameObject _settingsPanel;
+
+    [SerializeField] private GameObject _deathPanel;
     
+    private BirdController _birdController;
     private bool isPaused = false;
+
+    private TextMeshProUGUI _scoreText;
+
+    public void Initialize(BirdController birdController, ScoreManager scoreManager)
+    {
+        _birdController = birdController;
+        _birdController.RegisterDeathListener(() => 
+        {
+            int currentScore = scoreManager.GetScore();
+            ShowDeathPanel(currentScore);
+        });
+
+        _scoreText = _deathPanel.GetComponentInChildren<TextMeshProUGUI>(true);
+    }
+
+    private void OnDestroy()
+    {
+        _birdController.OnDie -= () => { };
+    }
 
     private void Update()
     {
@@ -31,6 +54,11 @@ public class PauseMenuManager : MonoBehaviour
         pauseMenuPanel.SetActive(true);
 
         isPaused = true;
+    }
+    
+    public void DeathPanel()
+    {
+        _deathPanel.SetActive(false);
     }
 
     private void TimeStop()
@@ -68,6 +96,14 @@ public class PauseMenuManager : MonoBehaviour
     {
         TimeResume();
 
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("Level_v1.0");
+    }
+
+    public void ShowDeathPanel(int score)
+    {
+        TimeStop();
+        _settingsPanel.SetActive(false);
+        _deathPanel.SetActive(true);
+        _scoreText.text = $"{score}";
     }
 }
