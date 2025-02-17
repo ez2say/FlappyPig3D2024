@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 195798971137162810}
   - component: {fileID: 3825884528150016415}
   - component: {fileID: 1368165185807418709}
+  - component: {fileID: 3878144923077370362}
   m_Layer: 0
   m_Name: beam
-  m_TagString: Untagged
+  m_TagString: Balka
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -62,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -6478536213147159724, guid: cc414c348abdaa748a4838174ab4055a, type: 3}
+  - {fileID: 2100000, guid: 8d9683fb58894db4aa7384274ea9d041, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,6 +85,27 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3878144923077370362
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 719536407444726912}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.19951198, y: 0.011862478, z: 0.018240878}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7793821084611883334
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,9 +117,10 @@ GameObject:
   - component: {fileID: 6934834698344702639}
   - component: {fileID: 6330052159306330330}
   - component: {fileID: 1605584117319139459}
+  - component: {fileID: 5913596779727990959}
   m_Layer: 0
   m_Name: beam
-  m_TagString: Untagged
+  m_TagString: Balka
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -145,7 +168,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -6478536213147159724, guid: cc414c348abdaa748a4838174ab4055a, type: 3}
+  - {fileID: 2100000, guid: 8d9683fb58894db4aa7384274ea9d041, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -167,3 +190,24 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5913596779727990959
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7793821084611883334}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.19951198, y: 0.011862478, z: 0.018240878}
+  m_Center: {x: 0, y: 0, z: 0}

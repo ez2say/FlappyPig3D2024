@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4478758243941130869}
   m_Layer: 0
   m_Name: Crane
-  m_TagString: Untagged
+  m_TagString: Balka
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -67,12 +67,12 @@ GameObject:
   - component: {fileID: 5969278635581853961}
   - component: {fileID: 6529592509700268845}
   - component: {fileID: 5699416035330510835}
-  - component: {fileID: 6428972088766209716}
   - component: {fileID: 3815165564122280806}
   - component: {fileID: 8729934692756395027}
+  - component: {fileID: 9059161259890698698}
   m_Layer: 0
   m_Name: Hook
-  m_TagString: Untagged
+  m_TagString: Balka
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -144,28 +144,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6428972088766209716
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4409244447570869673}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 1
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -2893882437805235404, guid: 77d61b191dcdf2542a4068a4dab96e21, type: 3}
 --- !u!54 &3815165564122280806
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -208,6 +186,27 @@ FixedJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!65 &9059161259890698698
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4409244447570869673}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0344505, y: 0.02, z: 0.031158878}
+  m_Center: {x: 0, y: 2.3472194e-16, z: -0.005579429}
 --- !u!1 &5285558166825193992
 GameObject:
   m_ObjectHideFlags: 0
@@ -222,7 +221,7 @@ GameObject:
   - component: {fileID: 8644614352598769012}
   m_Layer: 0
   m_Name: Cable
-  m_TagString: Untagged
+  m_TagString: Balka
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -308,7 +307,7 @@ MeshCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 1
+  m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
   m_Convex: 0

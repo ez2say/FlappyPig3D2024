@@ -13,6 +13,8 @@ TagManager:
   - SpecialZone
   - BoxCoin
   - Wire
+  - Drone
+  - Balka
   layers:
   - Default
   - TransparentFX

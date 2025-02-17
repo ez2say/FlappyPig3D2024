@@ -27,10 +27,6 @@ public class PauseMenuManager : MonoBehaviour
         _scoreText = _deathPanel.GetComponentInChildren<TextMeshProUGUI>(true);
     }
 
-    private void OnDestroy()
-    {
-        _birdController.OnDie -= () => { };
-    }
 
     private void Update()
     {

@@ -72,7 +72,7 @@ public class BirdController : MonoBehaviour, IDie
             UnityEngine.Object.Destroy(other.gameObject);
         }
 
-        if (other.CompareTag("Wire"))
+        if (other.CompareTag("Wire")|| other.CompareTag("Balka")|| other.CompareTag("Building") )
         {
             Die();
         }
@@ -88,7 +88,7 @@ public class BirdController : MonoBehaviour, IDie
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Obstacle") || collision.gameObject.CompareTag("Drone") || collision.gameObject.CompareTag("Balka"))
+        if (collision.gameObject.CompareTag("Obstacle") || collision.gameObject.CompareTag("Drone") || collision.gameObject.CompareTag("Ground"))
         {
             HandleObstacleCollision();
         }

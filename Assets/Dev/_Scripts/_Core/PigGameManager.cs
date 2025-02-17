@@ -70,6 +70,8 @@ public class PigGameManager : MonoBehaviour
     {
         birdController.enabled = true;
 
+        birdController.transform.position = new Vector3(5,48,-76);
+
         pigAnimator.enabled = false;
 
         birdController.SetScoreManager(_scoreManager);
